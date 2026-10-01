@@ -1,6 +1,6 @@
 # me-hub
 
-A private personal hub, for me only.
+A private personal hub, for me only
 
 - **Telegram bot** — every evening asks which habits were done today; habits can be added, renamed, archived and backfilled.
 - **Web dashboard** (`me.nikpeg.me`) — GitHub-style contribution grid: an overall grid plus one per habit, with streaks and completion stats.
