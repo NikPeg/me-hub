@@ -1,9 +1,13 @@
 :root {
   color-scheme: light dark;
-  --bg: #ffffff;
-  --text: #1f2328;
-  --muted: #656d76;
-  --border: #d0d7de;
+  --bg: #fbf2e4;
+  --bg2: #f6dfc3;
+  --accent: #c8651a;
+  --accent2: #6d55c7;
+  --accent3: #0c8b71;
+  --text: #1d1720;
+  --muted: #6d5d52;
+  --border: rgba(55, 36, 20, .16);
   --level-0: #ebedf0;
   --level-1: #9be9a8;
   --level-2: #40c463;
@@ -36,9 +40,47 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  min-height: 100vh;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 10% 10%, color-mix(in srgb, var(--accent) 25%, transparent), transparent 34rem),
+    radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent2) 26%, transparent), transparent 32rem),
+    linear-gradient(135deg, var(--bg), var(--bg2));
   color: var(--text);
   font: 14px/1.5 system-ui, sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -30%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent3) 18%, transparent), transparent 20rem),
+    radial-gradient(circle, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 24rem);
+  filter: blur(36px);
+  animation: drift 18s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+}
+
+@keyframes drift {
+  from { transform: translate3d(-4%, -2%, 0) rotate(0deg); }
+  to { transform: translate3d(5%, 3%, 0) rotate(10deg); }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: var(--bg); }
+  body::before, body::after { display: none; }
 }
 
 main { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
