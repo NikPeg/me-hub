@@ -18,6 +18,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
+from me_hub.core.colors import default_habit_color
+
 HABIT_NAME_MAX_LENGTH = 64
 TIMEZONE_MAX_LENGTH = 64
 
@@ -118,6 +120,7 @@ class Habit(Base):
         BigInteger, ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     name: Mapped[str] = mapped_column(String(HABIT_NAME_MAX_LENGTH))
+    color: Mapped[str] = mapped_column(String(7), default=default_habit_color)
     position: Mapped[int] = mapped_column(Integer, default=0)
     started_on: Mapped[date] = mapped_column(Date)
     archived_on: Mapped[date | None] = mapped_column(Date, default=None)

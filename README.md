@@ -45,9 +45,10 @@ Only the owner (`TELEGRAM_OWNER_ID`) can use the bot, in a private chat; other u
 
 | Command | Action |
 |---|---|
+| `/start` | show the dashboard link and command help |
 | `/today` | mark today's habits |
 | `/mark [date]` | mark another day: picker for the last week, or `28.09`, `28.09.2026`, `2026-09-28` |
-| `/habits` | list habits, rename or archive them |
+| `/habits` | list habits, rename, recolor or archive them |
 | `/add [name]` | add a habit |
 | `/settings` | show timezone and reminder times |
 | `/timezone <IANA>` | change timezone |
@@ -69,7 +70,9 @@ with @BotFather `/setdomain`. Only the owner (`TELEGRAM_OWNER_ID`) gets a sessio
 HMAC-signed `HttpOnly`, `Secure`, `SameSite=Strict` cookie valid for `SESSION_TTL_DAYS`.
 
 `/api/dashboard` returns the last 53 weeks: one overall grid (share of habits done per day)
-and one grid per active habit with streaks and completion rate.
+and one grid per active habit with streaks and completion rate. The overall grid uses a
+white-to-blue scale. Each habit receives a persistent random color on creation; the
+color can be changed from `/habits` in the bot.
 
 ## Configuration
 

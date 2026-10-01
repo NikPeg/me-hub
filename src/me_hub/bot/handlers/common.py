@@ -10,6 +10,10 @@ fallback_router = Router(name="fallback")
 
 
 @router.message(CommandStart())
+async def start(message: Message) -> None:
+    await message.answer(texts.START)
+
+
 @router.message(Command("help"))
 async def show_help(message: Message) -> None:
     await message.answer(texts.HELP)

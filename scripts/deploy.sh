@@ -9,6 +9,7 @@ cd "$deploy_path"
 test -s .env.runtime
 
 docker compose build migrate
+docker compose stop bot web
 docker compose run --rm migrate
 docker compose up -d --force-recreate bot web
 

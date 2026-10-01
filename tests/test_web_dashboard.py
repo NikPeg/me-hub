@@ -41,6 +41,7 @@ async def test_habit_grid_marks_done_missed_and_untracked_days(
 
     [grid] = dashboard.habits
     assert grid.name == "Run"
+    assert grid.color == habit.color
     assert grid.days[-1] == DayState.DONE
     assert grid.days[-2] == DayState.MISSED
     assert grid.days[-3] == DayState.DONE

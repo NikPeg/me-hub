@@ -3,6 +3,7 @@ from datetime import UTC, date, datetime, time, timedelta
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from me_hub.core.colors import HABIT_COLORS
 from me_hub.core.habits import (
     MAX_BACKFILL_DAYS,
     DayNotMarkableError,
@@ -11,6 +12,7 @@ from me_hub.core.habits import (
     active_habits,
     add_habit,
     archive_habit,
+    change_habit_color,
     done_habit_ids,
     ensure_markable,
     ensure_user,
@@ -57,6 +59,25 @@ async def test_add_habit_appends_and_starts_today(session: AsyncSession, owner: 
     assert [habit.name for habit in await active_habits(session, owner.id)] == ["Read", "Run"]
     assert second.position > first.position
     assert first.started_on == local_today(owner)
+    assert first.color in HABIT_COLORS
+    assert second.color in HABIT_COLORS
+    assert second.color != first.color
+
+
+async def test_change_habit_color_persists_a_different_color(
+    session: AsyncSession, owner: User
+) -> None:
+    habit = await add_habit(session, owner, "Read")
+    original_color = habit.color
+    owner_id = owner.id
+
+    changed = await change_habit_color(session, owner_id, habit.id)
+    new_color = changed.color
+    await session.commit()
+    session.expire_all()
+
+    assert new_color != original_color
+    assert (await active_habits(session, owner_id))[0].color == new_color
 
 
 async def test_add_habit_rejects_case_insensitive_duplicate(

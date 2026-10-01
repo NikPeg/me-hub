@@ -4,6 +4,7 @@ from datetime import date, datetime, time, timedelta
 from sqlalchemy import exists, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from me_hub.core.colors import random_habit_color
 from me_hub.core.models import Habit, HabitCheck, User, normalize_habit_name, utcnow
 
 MAX_BACKFILL_DAYS = 365
@@ -83,13 +84,23 @@ async def add_habit(session: AsyncSession, user: User, name: str) -> Habit:
     last_position = await session.scalar(
         select(func.max(Habit.position)).where(Habit.user_id == user.id)
     )
+    used_colors = (habit.color for habit in await active_habits(session, user.id))
     habit = Habit(
         user_id=user.id,
         name=name,
+        color=random_habit_color(used_colors),
         position=(last_position or 0) + 1,
         started_on=local_today(user),
     )
     session.add(habit)
+    await session.flush()
+    return habit
+
+
+async def change_habit_color(session: AsyncSession, user_id: int, habit_id: int) -> Habit:
+    habit = await get_active_habit(session, user_id, habit_id)
+    used_colors = (other.color for other in await active_habits(session, user_id))
+    habit.color = random_habit_color(used_colors, current=habit.color)
     await session.flush()
     return habit
 

@@ -21,6 +21,7 @@ TODAY_BUTTON = "Сегодня"
 YESTERDAY_BUTTON = "Вчера"
 ARCHIVE_BUTTON = "В архив"
 BACK_BUTTON = "Назад"
+CHANGE_COLOR_BUTTON = "🎨"
 
 COMMAND_DESCRIPTIONS = {
     "today": "Отметить сегодня",
@@ -35,13 +36,14 @@ HELP = (
     "Я каждый вечер спрашиваю, какие привычки ты сделал за день.\n\n"
     "/today — отметить сегодня\n"
     "/mark — отметить другой день (например, <code>/mark 28.09</code>)\n"
-    "/habits — список привычек: переименовать, архивировать\n"
+    "/habits — список привычек: переименовать, сменить цвет, архивировать\n"
     "/add — добавить привычку (например, <code>/add Читать</code>)\n"
     "/settings — часовой пояс и время напоминаний\n"
     "/timezone — сменить часовой пояс (например, <code>/timezone Asia/Dubai</code>)\n"
     "/reminder — сменить время вечернего опроса (например, <code>/reminder 23:00</code>)\n"
     "/cancel — отменить текущее действие"
 )
+START = '<a href="https://me.nikpeg.me/">Открыть сайт с привычками</a>\n\n' + HELP
 UNKNOWN_MESSAGE = "Не понял. Список команд: /help"
 SOMETHING_WENT_WRONG = "Что-то пошло не так. Попробуй ещё раз чуть позже."
 
@@ -59,13 +61,14 @@ BAD_DATE = (
 DAY_NOT_MARKABLE = "Этот день отметить нельзя: только прошлые дни за последний год и сегодня."
 HABIT_NOT_FOUND = "Привычка не найдена: возможно, она уже в архиве."
 
-HABITS_TITLE = "Твои привычки. ✏️ — переименовать, 🗄 — в архив."
+HABITS_TITLE = "Твои привычки. ✏️ — переименовать, 🎨 — сменить цвет, 🗄 — в архив."
 ASK_HABIT_NAME = "Как назовём привычку? /cancel — отменить."
 ASK_NEW_HABIT_NAME = "Новое название для «{name}»? /cancel — отменить."
 BAD_HABIT_NAME = "Название должно быть непустым и не длиннее {max_length} символов."
 DUPLICATE_HABIT = "Привычка «{name}» уже есть."
 HABIT_ADDED = "Добавил «{name}». Отметить сегодня: /today"
 HABIT_RENAMED = "Переименовал в «{name}»."
+HABIT_COLOR_CHANGED = "Новый цвет для «{name}» сохранён. Смотри на сайте."
 CONFIRM_ARCHIVE = "Убрать «{name}» в архив? Перестану о ней спрашивать, история сохранится."
 HABIT_ARCHIVED = "«{name}» в архиве."
 

@@ -24,6 +24,7 @@ class PickDay(CallbackData, prefix="day"):
 
 class HabitActionKind(StrEnum):
     RENAME = "rename"
+    COLOR = "color"
     ARCHIVE = "archive"
     CONFIRM_ARCHIVE = "confirm"
     BACK = "back"
@@ -65,10 +66,14 @@ def habits_markup(habits: Sequence[Habit]) -> InlineKeyboardMarkup:
             callback_data=HabitAction(action=HabitActionKind.RENAME, habit_id=habit.id),
         )
         builder.button(
+            text=texts.CHANGE_COLOR_BUTTON,
+            callback_data=HabitAction(action=HabitActionKind.COLOR, habit_id=habit.id),
+        )
+        builder.button(
             text="🗄",
             callback_data=HabitAction(action=HabitActionKind.ARCHIVE, habit_id=habit.id),
         )
-    builder.adjust(2)
+    builder.adjust(3)
     return builder.as_markup()
 
 

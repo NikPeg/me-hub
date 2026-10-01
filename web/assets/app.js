@@ -64,6 +64,7 @@ function describeHabit(state) {
 function renderHabit(habit, start) {
   const section = document.createElement("section");
   section.className = "habit";
+  section.style.setProperty("--habit-color", habit.color);
 
   const title = document.createElement("h2");
   title.textContent = habit.name;

@@ -9,6 +9,11 @@
   --level-2: #40c463;
   --level-3: #30a14e;
   --level-4: #216e39;
+  --overall-0: #ffffff;
+  --overall-1: #dbeafe;
+  --overall-2: #93c5fd;
+  --overall-3: #3b82f6;
+  --overall-4: #1d4ed8;
   --cell: 12px;
   --gap: 3px;
 }
@@ -72,5 +77,11 @@ button {
 .cell[data-level="3"] { background: var(--level-3); }
 .cell[data-level="4"] { background: var(--level-4); }
 .cell[data-level="none"] { background: transparent; outline: 1px dashed var(--border); outline-offset: -1px; }
+#overall .cell[data-level="0"] { background: var(--overall-0); border: 1px solid var(--border); }
+#overall .cell[data-level="1"] { background: var(--overall-1); }
+#overall .cell[data-level="2"] { background: var(--overall-2); }
+#overall .cell[data-level="3"] { background: var(--overall-3); }
+#overall .cell[data-level="4"] { background: var(--overall-4); }
+.habit .cell[data-level="4"] { background: var(--habit-color); }
 
 .stats { color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 8px; }

@@ -10,7 +10,14 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from me_hub.bot.app import create_dispatcher
 from me_hub.bot.config import BotSettings
-from me_hub.bot.keyboards import ToggleCheck, checkin_markup, day_picker_markup
+from me_hub.bot.keyboards import (
+    HabitAction,
+    HabitActionKind,
+    ToggleCheck,
+    checkin_markup,
+    day_picker_markup,
+    habits_markup,
+)
 from me_hub.bot.middlewares import OwnerOnlyMiddleware
 from me_hub.bot.reminders import ReminderScheduler
 from me_hub.core.models import Habit
@@ -68,6 +75,16 @@ def test_day_picker_offers_last_week() -> None:
     labels = [button.text for row in markup.inline_keyboard for button in row]
     assert labels[:2] == ["Сегодня", "Вчера"]
     assert len(labels) == 7
+
+
+def test_habit_actions_include_color_change() -> None:
+    habit = Habit(id=1, user_id=OWNER_ID, name="Read", started_on=DAY)
+
+    buttons = habits_markup([habit]).inline_keyboard[0]
+    assert buttons[1].callback_data is not None
+    assert HabitAction.unpack(buttons[1].callback_data) == HabitAction(
+        action=HabitActionKind.COLOR, habit_id=habit.id
+    )
 
 
 async def test_dispatcher_handles_messages_and_callbacks(

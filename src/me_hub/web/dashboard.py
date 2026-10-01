@@ -22,6 +22,7 @@ class HabitGrid(BaseModel):
 
     id: int
     name: str
+    color: str
     current_streak: int
     longest_streak: int
     total_done: int
@@ -69,6 +70,7 @@ async def build_dashboard(session: AsyncSession, user: User) -> Dashboard:
             HabitGrid(
                 id=habit.id,
                 name=habit.name,
+                color=habit.color,
                 current_streak=stats.current_streak,
                 longest_streak=stats.longest_streak,
                 total_done=stats.total_done,

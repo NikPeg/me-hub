@@ -16,6 +16,7 @@ from me_hub.core.habits import (
     HabitNotFoundError,
     add_habit,
     archive_habit,
+    change_habit_color,
     get_active_habit,
     rename_habit,
 )
@@ -134,6 +135,20 @@ async def ask_archive(
     )
     await show_in_place(callback, view)
     await callback.answer()
+
+
+@router.callback_query(HabitAction.filter(F.action == HabitActionKind.COLOR))
+async def change_color(
+    callback: CallbackQuery, callback_data: HabitAction, session: AsyncSession, user: User
+) -> None:
+    try:
+        habit = await change_habit_color(session, user.id, callback_data.habit_id)
+    except HabitNotFoundError:
+        await _habit_gone(callback, session, user)
+        return
+    await session.commit()
+    await callback.answer(texts.HABIT_COLOR_CHANGED.format(name=habit.name))
+    await show_in_place(callback, await habits_view(session, user))
 
 
 @router.callback_query(HabitAction.filter(F.action == HabitActionKind.CONFIRM_ARCHIVE))
