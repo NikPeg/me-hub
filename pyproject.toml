@@ -1,0 +1,55 @@
+[project]
+name = "me-hub"
+version = "0.1.0"
+description = "Private personal hub: Telegram habit tracker with a GitHub-style dashboard."
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "aiogram>=3.31.0",
+    "aiosqlite>=0.22.1",
+    "alembic>=1.20.0",
+    "apscheduler>=3.11.3,<4",
+    "pydantic-settings>=2.15.0",
+    "sqlalchemy[asyncio]>=2.1.1",
+    "starlette>=1.7.0",
+    "uvicorn>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.16.9",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "ASYNC", "RUF", "DTZ", "S", "PTH"]
+
+[tool.ruff.lint.per-file-ignores]
+# Russian bot copy lives only in texts.py; tests assert on it.
+"src/me_hub/bot/texts.py" = ["RUF001"]
+"tests/**" = ["S101", "S105", "S106", "RUF001"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests", "migrations"]
+
+[[tool.mypy.overrides]]
+module = ["apscheduler.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
