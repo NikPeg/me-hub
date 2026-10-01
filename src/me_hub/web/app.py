@@ -8,6 +8,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, RedirectResponse, Response
 from starlette.routing import Route
 
+from me_hub.bot.texts import WEB_TEXTS
 from me_hub.core.models import User, utcnow
 from me_hub.web.config import WebSettings
 from me_hub.web.dashboard import build_dashboard
@@ -46,6 +47,10 @@ def owner_only(handler: Handler) -> Handler:
 async def config(request: Request) -> Response:
     settings: WebSettings = request.app.state.settings
     return json_response({"bot_username": settings.telegram_bot_username})
+
+
+async def web_texts(_request: Request) -> Response:
+    return json_response(WEB_TEXTS)
 
 
 async def telegram_login(request: Request) -> Response:
@@ -100,6 +105,7 @@ def create_app(
     app = Starlette(
         routes=[
             Route("/api/config", config),
+            Route("/api/texts", web_texts),
             Route("/api/auth/telegram", telegram_login),
             Route("/api/auth/logout", logout, methods=["POST"]),
             Route("/api/me", me),

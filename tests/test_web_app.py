@@ -51,6 +51,14 @@ async def test_config_exposes_bot_username(client: httpx.AsyncClient) -> None:
     assert response.headers["cache-control"] == "no-store"
 
 
+async def test_web_texts_are_available_without_a_session(client: httpx.AsyncClient) -> None:
+    response = await client.get("/api/texts")
+
+    assert response.status_code == 200
+    assert response.json()["overall"] == "Все привычки"
+    assert len(response.json()["weekdays"]) == 7
+
+
 @pytest.mark.parametrize("path", ["/api/me", "/api/dashboard"])
 async def test_protected_routes_require_a_session(client: httpx.AsyncClient, path: str) -> None:
     assert (await client.get(path)).status_code == 401

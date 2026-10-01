@@ -1,4 +1,4 @@
-"""All user-facing bot copy. The bot speaks Russian, so Cyrillic is expected only here."""
+"""All user-facing copy for the bot and web dashboard."""
 
 MONTHS_GENITIVE = (
     "января",
@@ -86,3 +86,24 @@ UNKNOWN_TIMEZONE = (
 TIMEZONE_UPDATED = "Часовой пояс: <b>{timezone}</b>. Вечерний опрос в {reminder_time} по нему."
 REMINDER_USAGE = "Укажи время в формате ЧЧ:ММ, например: <code>/reminder 23:00</code>"
 REMINDER_UPDATED = "Теперь спрашиваю каждый день в <b>{reminder_time}</b> ({timezone})."
+
+WEB_TEXTS = {
+    "months": ("янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"),
+    "weekdays": ("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"),
+    "logout": "Выйти",
+    "overall": "Все привычки",
+    "login_failed": "Не удалось войти. Попробуйте ещё раз.",
+    "data_failed": "Не удалось загрузить данные.",
+    "service_failed": "Сервис недоступен. Попробуйте позже.",
+    "year": "Весь год",
+    "no_habits": "нет привычек",
+    "done": "выполнено",
+    "missed": "пропущено",
+    "untracked": "не отслеживалось",
+    "streak": "Серия",
+    "record": "Рекорд",
+    "total": "Всего",
+    "completion": "Выполнение",
+    "today": "Сегодня",
+    "of": "из",
+}
