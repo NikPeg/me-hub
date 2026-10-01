@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>me-hub</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <main id="login" hidden>
+    <h1>me-hub</h1>
+    <p id="login-error" class="error" role="alert" hidden>Не удалось войти. Попробуйте ещё раз.</p>
+    <div id="login-widget"></div>
+  </main>
+
+  <main id="dashboard" hidden>
+    <header>
+      <h1>me-hub</h1>
+      <button id="logout" type="button">Выйти</button>
+    </header>
+    <p id="dashboard-error" class="error" role="alert" hidden></p>
+    <section>
+      <h2>Все привычки</h2>
+      <div id="overall"></div>
+    </section>
+    <div id="habits"></div>
+  </main>
+
+  <script src="/assets/app.js" type="module"></script>
+</body>
+</html>
