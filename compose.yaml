@@ -1,0 +1,30 @@
+name: me-hub
+
+x-app: &app
+  image: me-hub:latest
+  env_file: .env.runtime
+  volumes:
+    - data:/app/data
+
+services:
+  migrate:
+    <<: *app
+    build: .
+
+  bot:
+    <<: *app
+    command: python -m me_hub.bot
+    restart: unless-stopped
+
+  web:
+    <<: *app
+    command: python -m me_hub.web
+    environment:
+      WEB_HOST: 0.0.0.0
+    ports:
+      - 127.0.0.1:8000:8000
+    restart: unless-stopped
+
+volumes:
+  data:
+    name: me-hub-data

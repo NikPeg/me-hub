@@ -91,7 +91,16 @@ Read from environment variables or `.env`:
 ## GitHub Actions
 
 `.github/workflows/ci.yml` runs lint, type checks and tests on every push and pull request,
-then checks that the Docker image builds. Nothing is published.
+then checks that the Docker image builds. A successful push to `main` also deploys over SSH:
+it uploads the release to `DEPLOY_PATH`, builds the image on the server, runs migrations,
+starts the bot and web API with Docker Compose, installs the static dashboard and nginx
+configuration, and checks the public site. The server needs Docker Compose, rsync, nginx,
+the wildcard TLS certificate at `/etc/ssl/nikpeg.me.pem` and its key at
+`/etc/ssl/nikpeg.me.key`. The configured deploy user must be able to manage Docker, nginx,
+and `/var/www/me-hub` (the current deployment script requires root).
+
+The SQLite database lives in the persistent Docker volume `me-hub-data`. Runtime secrets
+are stored on the server as `DEPLOY_PATH/.env.runtime` with mode 600.
 
 `scripts/setup-github.sh [owner/repo]` interactively sets the repository's Actions
 variables and secrets with `gh` (requires admin access). Secrets are kept to the minimum:

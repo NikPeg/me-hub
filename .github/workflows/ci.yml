@@ -43,3 +43,65 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to production
+    needs: image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ vars.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Upload release and secrets
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          TELEGRAM_BOT_USERNAME: ${{ vars.TELEGRAM_BOT_USERNAME }}
+          TELEGRAM_OWNER_ID: ${{ vars.TELEGRAM_OWNER_ID }}
+          DEFAULT_TIMEZONE: ${{ vars.DEFAULT_TIMEZONE }}
+          DEFAULT_REMINDER_TIME: ${{ vars.DEFAULT_REMINDER_TIME }}
+          MORNING_REMINDER_TIME: ${{ vars.MORNING_REMINDER_TIME }}
+        run: |
+          set -euo pipefail
+          [[ $DEPLOY_HOST =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ $DEPLOY_USER =~ ^[a-z_][a-z0-9_-]*$ ]]
+          [[ $DEPLOY_PATH =~ ^/[A-Za-z0-9._/-]+$ ]]
+          target="$DEPLOY_USER@$DEPLOY_HOST"
+          ssh "$target" "install -d -m 700 '$DEPLOY_PATH'"
+          tar -cf - Dockerfile .dockerignore pyproject.toml uv.lock README.md \
+            alembic.ini migrations src web nginx compose.yaml scripts/deploy.sh \
+            | ssh "$target" "tar -xf - -C '$DEPLOY_PATH'"
+          umask 077
+          runtime_env=$(mktemp)
+          trap 'rm -f "$runtime_env"' EXIT
+          {
+            printf 'TELEGRAM_BOT_TOKEN=%s\n' "$TELEGRAM_BOT_TOKEN"
+            printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
+            printf 'TELEGRAM_BOT_USERNAME=%s\n' "$TELEGRAM_BOT_USERNAME"
+            printf 'TELEGRAM_OWNER_ID=%s\n' "$TELEGRAM_OWNER_ID"
+            printf 'DEFAULT_TIMEZONE=%s\n' "$DEFAULT_TIMEZONE"
+            printf 'DEFAULT_REMINDER_TIME=%s\n' "$DEFAULT_REMINDER_TIME"
+            printf 'MORNING_REMINDER_TIME=%s\n' "$MORNING_REMINDER_TIME"
+          } > "$runtime_env"
+          scp "$runtime_env" "$target:$DEPLOY_PATH/.env.runtime.new"
+          ssh "$target" "mv '$DEPLOY_PATH/.env.runtime.new' '$DEPLOY_PATH/.env.runtime' && chmod 600 '$DEPLOY_PATH/.env.runtime'"
+      - name: Deploy and verify
+        run: |
+          set -euo pipefail
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "bash '$DEPLOY_PATH/scripts/deploy.sh' '$DEPLOY_PATH'"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
+            https://me.nikpeg.me/ --output /dev/null
