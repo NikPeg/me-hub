@@ -98,9 +98,10 @@ async def test_site_command_sends_a_pinnable_link_message() -> None:
 
     message.answer.assert_awaited_once()
     (text,), kwargs = message.answer.await_args
-    assert text == "Сайт"
+    assert text == "Прогресс привычек"
     assert kwargs["reply_markup"] == site_markup()
     [[button]] = kwargs["reply_markup"].inline_keyboard
+    assert button.text == "📊 Посмотреть прогресс привычек"
     assert button.url == "https://me.nikpeg.me/"
     assert "site" in {command.command for command in COMMANDS}
 
