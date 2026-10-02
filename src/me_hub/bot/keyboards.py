@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from enum import StrEnum
 
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from me_hub.bot import texts
@@ -33,6 +33,12 @@ class HabitActionKind(StrEnum):
 class HabitAction(CallbackData, prefix="hab"):
     action: HabitActionKind
     habit_id: int
+
+
+def site_markup() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text=texts.SITE_BUTTON, url=texts.SITE_URL)]]
+    )
 
 
 def checkin_markup(habits: Sequence[Habit], done_ids: set[int], day: date) -> InlineKeyboardMarkup:

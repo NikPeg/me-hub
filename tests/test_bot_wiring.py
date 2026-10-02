@@ -1,15 +1,17 @@
 from datetime import date, time
 from typing import Any
+from unittest.mock import AsyncMock
 
 import pytest
-from aiogram.types import Chat, InlineKeyboardMarkup, TelegramObject, Update
+from aiogram.types import Chat, InlineKeyboardMarkup, Message, TelegramObject, Update
 from aiogram.types import User as TelegramUser
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from me_hub.bot.app import create_dispatcher
+from me_hub.bot.app import COMMANDS, create_dispatcher
 from me_hub.bot.config import BotSettings
+from me_hub.bot.handlers.common import show_site
 from me_hub.bot.keyboards import (
     HabitAction,
     HabitActionKind,
@@ -17,6 +19,7 @@ from me_hub.bot.keyboards import (
     checkin_markup,
     day_picker_markup,
     habits_markup,
+    site_markup,
 )
 from me_hub.bot.middlewares import OwnerOnlyMiddleware
 from me_hub.bot.reminders import ReminderScheduler
@@ -85,6 +88,21 @@ def test_habit_actions_include_color_change() -> None:
     assert HabitAction.unpack(buttons[1].callback_data) == HabitAction(
         action=HabitActionKind.COLOR, habit_id=habit.id
     )
+
+
+async def test_site_command_sends_a_pinnable_link_message() -> None:
+    message = AsyncMock(spec=Message)
+    message.answer = AsyncMock()
+
+    await show_site(message)
+
+    message.answer.assert_awaited_once()
+    (text,), kwargs = message.answer.await_args
+    assert text == "Сайт"
+    assert kwargs["reply_markup"] == site_markup()
+    [[button]] = kwargs["reply_markup"].inline_keyboard
+    assert button.url == "https://me.nikpeg.me/"
+    assert "site" in {command.command for command in COMMANDS}
 
 
 async def test_dispatcher_handles_messages_and_callbacks(

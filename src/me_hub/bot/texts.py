@@ -26,6 +26,7 @@ CHANGE_COLOR_BUTTON = "🎨"
 COMMAND_DESCRIPTIONS = {
     "today": "Отметить сегодня",
     "mark": "Отметить другой день",
+    "site": "Открыть сайт",
     "habits": "Список привычек",
     "add": "Добавить привычку",
     "settings": "Часовой пояс и напоминания",
@@ -37,6 +38,7 @@ HELP = (
     "а я напомню об этом вечером. Прогресс можно посмотреть на сайте.\n\n"
     "/today — отметить сегодня\n"
     "/mark — отметить другой день (например, <code>/mark 28.09</code>)\n"
+    "/site — открыть сайт\n"
     "/habits — список привычек: переименовать, сменить цвет, архивировать\n"
     "/add — добавить привычку (например, <code>/add Читать</code>)\n"
     "/settings — часовой пояс и время напоминаний\n"
@@ -44,7 +46,10 @@ HELP = (
     "/reminder — сменить время вечернего опроса (например, <code>/reminder 23:00</code>)\n"
     "/cancel — отменить текущее действие"
 )
-START = "https://me.nikpeg.me/\n\n" + HELP
+SITE_URL = "https://me.nikpeg.me/"
+START = SITE_URL + "\n\n" + HELP
+SITE_MESSAGE = "Сайт"
+SITE_BUTTON = "🌐 Открыть сайт me.nikpeg.me"
 UNKNOWN_MESSAGE = "Не понял. Список команд: /help"
 SOMETHING_WENT_WRONG = "Что-то пошло не так. Попробуй ещё раз чуть позже."
 
