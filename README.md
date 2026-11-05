@@ -49,7 +49,7 @@ Only the owner (`TELEGRAM_OWNER_ID`) can use the bot, in a private chat; other u
 | `/site` | send a short message with a full-row button linking to the dashboard |
 | `/today` | mark today's habits |
 | `/mark [date]` | mark another day: picker for the last week, or `28.09`, `28.09.2026`, `2026-09-28` |
-| `/habits` | list habits, rename, recolor or archive them |
+| `/habits` | list habits, rename, recolor, archive or permanently delete them |
 | `/add [name]` | add a habit |
 | `/settings` | show timezone and reminder times |
 | `/timezone <IANA>` | change timezone |

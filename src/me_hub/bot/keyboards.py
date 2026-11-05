@@ -27,6 +27,8 @@ class HabitActionKind(StrEnum):
     COLOR = "color"
     ARCHIVE = "archive"
     CONFIRM_ARCHIVE = "confirm"
+    DELETE = "delete"
+    CONFIRM_DELETE = "confirm_delete"
     BACK = "back"
 
 
@@ -79,7 +81,25 @@ def habits_markup(habits: Sequence[Habit]) -> InlineKeyboardMarkup:
             text="🗄",
             callback_data=HabitAction(action=HabitActionKind.ARCHIVE, habit_id=habit.id),
         )
-    builder.adjust(3)
+        builder.button(
+            text=texts.DELETE_ICON,
+            callback_data=HabitAction(action=HabitActionKind.DELETE, habit_id=habit.id),
+        )
+    builder.adjust(4)
+    return builder.as_markup()
+
+
+def confirm_delete_markup(habit_id: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text=texts.DELETE_BUTTON,
+        callback_data=HabitAction(action=HabitActionKind.CONFIRM_DELETE, habit_id=habit_id),
+    )
+    builder.button(
+        text=texts.CANCEL_DELETE_BUTTON,
+        callback_data=HabitAction(action=HabitActionKind.BACK, habit_id=habit_id),
+    )
+    builder.adjust(1)
     return builder.as_markup()
 
 

@@ -59,6 +59,23 @@ async def active_habits(session: AsyncSession, user_id: int) -> list[Habit]:
     return list(result)
 
 
+async def get_habit(session: AsyncSession, user_id: int, habit_id: int) -> Habit:
+    habit = await session.scalar(
+        select(Habit).where(Habit.id == habit_id, Habit.user_id == user_id)
+    )
+    if habit is None:
+        raise HabitNotFoundError(f"Habit {habit_id} not found")
+    return habit
+
+
+async def delete_habit(session: AsyncSession, user_id: int, habit_id: int) -> Habit:
+    """Permanently deletes an owned habit and its checks via the database cascade."""
+    habit = await get_habit(session, user_id, habit_id)
+    await session.delete(habit)
+    await session.flush()
+    return habit
+
+
 async def get_active_habit(session: AsyncSession, user_id: int, habit_id: int) -> Habit:
     habit = await session.scalar(
         select(Habit).where(

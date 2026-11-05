@@ -8,7 +8,12 @@ from aiogram.types import CallbackQuery, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from me_hub.bot import texts
-from me_hub.bot.keyboards import HabitAction, HabitActionKind, confirm_archive_markup
+from me_hub.bot.keyboards import (
+    HabitAction,
+    HabitActionKind,
+    confirm_archive_markup,
+    confirm_delete_markup,
+)
 from me_hub.bot.messaging import show_in_place
 from me_hub.bot.views import View, habits_view
 from me_hub.core.habits import (
@@ -17,7 +22,9 @@ from me_hub.core.habits import (
     add_habit,
     archive_habit,
     change_habit_color,
+    delete_habit,
     get_active_habit,
+    get_habit,
     rename_habit,
 )
 from me_hub.core.models import HABIT_NAME_MAX_LENGTH, User
@@ -39,6 +46,36 @@ BAD_HABIT_NAME = texts.BAD_HABIT_NAME.format(max_length=HABIT_NAME_MAX_LENGTH)
 async def list_habits(message: Message, session: AsyncSession, user: User) -> None:
     view = await habits_view(session, user)
     await message.answer(view.text, reply_markup=view.markup)
+
+
+@router.callback_query(HabitAction.filter(F.action == HabitActionKind.DELETE))
+async def ask_delete(
+    callback: CallbackQuery, callback_data: HabitAction, session: AsyncSession, user: User
+) -> None:
+    try:
+        habit = await get_habit(session, user.id, callback_data.habit_id)
+    except HabitNotFoundError:
+        await _habit_gone(callback, session, user)
+        return
+    await show_in_place(
+        callback,
+        View(texts.CONFIRM_DELETE.format(name=escape(habit.name)), confirm_delete_markup(habit.id)),
+    )
+    await callback.answer()
+
+
+@router.callback_query(HabitAction.filter(F.action == HabitActionKind.CONFIRM_DELETE))
+async def confirm_delete(
+    callback: CallbackQuery, callback_data: HabitAction, session: AsyncSession, user: User
+) -> None:
+    try:
+        habit = await delete_habit(session, user.id, callback_data.habit_id)
+    except HabitNotFoundError:
+        await _habit_gone(callback, session, user)
+        return
+    await session.commit()
+    await callback.answer(texts.HABIT_DELETED.format(name=habit.name))
+    await show_in_place(callback, await habits_view(session, user))
 
 
 @router.message(Command("add"))
