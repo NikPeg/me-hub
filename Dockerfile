@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM ghcr.io/astral-sh/uv:0.12.21 AS uv
 
-FROM python:3.14-slim AS builder
+FROM python:3.15-slim AS builder
 COPY --from=uv /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -16,7 +16,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
-FROM python:3.14-slim
+FROM python:3.15-slim
 RUN useradd --system --uid 10001 --home-dir /app --no-create-home app \
     && mkdir -p /app/data \
     && chown app:app /app/data
